@@ -1,0 +1,66 @@
+@page "/summary"
+@inject HttpClient Http
+
+<h1 class="page-header">Breaches Summary</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Domain</th>
+            <th>Breach Date</th>
+            <th>Date Added</th>
+            <th>Accounts Comprimised</th>
+            <th>Description</th>
+            <th>Verified?</th>
+            <th>Fabricated?</th>
+            <th>Sensitive?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var breach in breaches)
+            {
+                <tr>
+                    <td>@breach.Name</td>
+                    <td>@breach.Domain</td>
+                    <td>@breach.BreachDate</td>
+                    <td>@breach.AddedDate</td>
+                    <td>@breach.PwnCount</td>
+                    <td>@breach.Description</td>
+                    <td>@breach.IsVerified</td>
+                    <td>@breach.IsFabricated</td>
+                    <td>@breach.IsSensitive</td>
+                </tr>
+            }
+        </tbody>
+</table>
+
+<style>
+    .page-header {
+        text-align: center;
+    }
+
+   
+</style>
+
+@code {
+    private Breach[] breaches;
+
+    protected override async Task OnInitializedAsync()
+    {
+        breaches = await Http.GetFromJsonAsync<Breach[]>("https://haveibeenpwned.com/api/v3/breaches");
+    }
+
+    public class Breach
+    {
+        public string Name { get; set; }
+        public string Domain { get; set; }
+        public DateTime BreachDate { get; set; }
+        public DateTime AddedDate { get; set; }
+        public int PwnCount { get; set; }
+        public string Description { get; set; }
+        public bool IsVerified { get; set; }
+        public bool IsFabricated { get; set; }
+        public bool IsSensitive { get; set; }
+    }
+}
